@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 final class UserMutation
 {
@@ -25,5 +26,10 @@ final class UserMutation
     {
         $user = User::find($args['id']);
         return $user->toggleUserActivateInstance();
+    }
+
+    public function addRoleToUser($_,array $args)
+    {
+        return Auth::user()->addRole($args['role_id']);
     }
 }

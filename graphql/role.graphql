@@ -1,9 +1,17 @@
 extend type Query {
-    role(id: ID @eq) Role
+    role(id: ID @eq): Role @find @guard
 }
 
 extend type Mutation {
-    
+    roleupsert(input: RoleInput): Role @field(resolver:"RoleMutation@upsert") @guard
+    roledelete(id: ID @rules(apply: ["exists:roles,id"]) @eq): Role @field(resolver:"RoleMutation@delete")  @guard
+}
+
+# Inputs
+
+input RoleInput @validator {
+    name: String,
+    priviledges: [ID],
 }
 
 # Types

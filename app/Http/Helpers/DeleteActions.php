@@ -8,7 +8,7 @@ trait DeleteActions {
     {
         foreach( $relation_array as $relation )
         {
-            $this->$relation()->deattach();
+            $this->$relation()->detach();
         }
 
         $this->delete();

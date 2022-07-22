@@ -16,8 +16,14 @@ final class RoleMutation
         // TODO implement the resolver
     }
 
-    public function RoleMutation($_,array $args)
+    public function upsert($_,array $args)
     {
-        Role::upsertInstance($args);
+        return Role::upsertInstance($args);
+    }
+
+    public function delete($_,array $args)
+    {
+        $role = Role::find($args['id']);
+        return $role->deleteInstance();
     }
 }

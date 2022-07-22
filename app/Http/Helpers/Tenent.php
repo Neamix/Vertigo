@@ -10,7 +10,6 @@ trait Tenent {
         parent::boot();
 
         static::addGlobalScope(function ($model) {
-            dd(Auth::user());
             $model->where('company_id',Auth::user()->company_id);
         });
     }

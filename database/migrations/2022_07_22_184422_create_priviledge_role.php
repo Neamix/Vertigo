@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRolePriviledge extends Migration
+class CreatePriviledgeRole extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRolePriviledge extends Migration
      */
     public function up()
     {
-        Schema::create('role_priviledge', function (Blueprint $table) {
+        Schema::create('priviledge_role', function (Blueprint $table) {
             $table->id();
             $table->foreignId('role_id');
             $table->foreignId('priviledge_id');
@@ -28,6 +28,6 @@ class CreateRolePriviledge extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_priviledge');
+        Schema::dropIfExists('priviledge_role');
     }
 }

@@ -76,6 +76,13 @@ class User extends Authenticatable
         return $checkCredintions;
     }
 
+    public function addRole($role_id)
+    {
+        $this->role_id = $role_id;
+        $this->save();
+        return $this;
+    }
+
     static function upsertInstance($request)
     {
        
@@ -89,7 +96,8 @@ class User extends Authenticatable
                     ],
                     [
                         'name'  => $request['input']['name'],
-                        'email' => $request['input']['email']
+                        'email' => $request['input']['email'],
+                        'company_id' => Auth::user()->company_id
                     ]);
 
         if ($userOld->email != $user->email) {

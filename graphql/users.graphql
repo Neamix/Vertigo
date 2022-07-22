@@ -6,6 +6,7 @@ extend type Mutation {
         input: UserDeleteSuspend
     ): User! @field(resolver:"UserMutation@delete")  @validator @guard
     toggleUserActivate(id: ID!): User @field(resolver: "UserMutation@toggleUserActivate") @guard
+    addRole(role_id: ID @rules(apply: ["exists:roles,id"])): User @field(resolver: "UserMutation@addRoleToUser") @guard
 }
 
 extend type Query {
