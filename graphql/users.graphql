@@ -1,0 +1,44 @@
+
+extend type Mutation {
+    uploadAvatar(file: Upload!): User @guard
+    uploadCover (file: Upload!): User @guard
+    deleteUser(
+        input: UserDeleteSuspend
+    ): User! @field(resolver:"UserMutation@delete")  @validator @guard
+    toggleUserActivate(id: ID!): User @field(resolver: "UserMutation@toggleUserActivate") @guard
+}
+
+extend type Query {
+    user(
+      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find @guard
+
+    users(
+       input: UserSearchInput 
+    ): User  @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\UserQuery@userList") @guard
+
+    userExport(type: String!): String @field(resolver: "UserQuery@userExport") @guard
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    email_verified_at: DateTime
+    avatar: String,
+    cover: String,
+    active: Int,
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input UserDeleteSuspend {
+    password: String,
+    id: ID
+}
+
+input UserSearchInput {
+    name: String
+    role: String
+}

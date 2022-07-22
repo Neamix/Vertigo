@@ -1,0 +1,54 @@
+extend type Mutation {
+    login(
+        input: UserInput
+    ): Auth @field(resolver: "UserAuthMutation@login")
+
+    upsert(
+        input: UserCreateInput
+    ): User  @field(resolver: "UserAuthMutation@upsert")
+
+    forgetPassword(
+        input: UserForgetInput
+    ): String @field(resolver: "UserAuthMutation@forgetPassword")
+
+    resetPassword(
+        input: UserResetPassword
+    ): String @field(resolver: "UserAuthMutation@resetPassword")
+}
+
+extend type Query {
+    getAuthUser: User @field(resolver: "UserAuthQuery@getAuthedUser")
+}
+
+
+type Auth {
+    user: User,
+    access_token: String
+}
+
+type ForgetPassword {
+    message: String,
+    status: String
+}
+
+input UserInput @validator  {
+    email: String,
+    password: String,
+}
+
+input UserForgetInput @validator {
+    email: String
+}
+
+input UserCreateInput @validator {
+    email: String,
+    name: String,
+    id: ID
+}
+
+input UserResetPassword @validator {
+    email: String,
+    token: String,
+    password: String,
+    password_confirmation: String,
+}

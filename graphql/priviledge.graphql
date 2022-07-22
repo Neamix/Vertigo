@@ -1,0 +1,11 @@
+extend type Query {
+    priviledges: [Priviledge!]! @paginate @guard
+    priviledge(id: ID @eq): Priviledge @find @guard
+}
+
+# Types
+type Priviledge {
+    parent: String,
+    name: String,
+    id: ID
+}
