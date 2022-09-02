@@ -17,8 +17,8 @@ class SuspendedMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ( Auth::check() ) {
-            if ( ! Auth::user()->active ) {
+        if ( Auth::guard('api')->check() ) {
+            if ( ! Auth::guard('api')->user()->active ) {
                 return response()->json([
                     'message' => 'Request has been blocked'
                 ], 503);
