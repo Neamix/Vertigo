@@ -33,6 +33,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'company_id'
     ];
 
     protected $root = 'storage/images/avatar';
@@ -58,22 +60,13 @@ class User extends Authenticatable
 
     static function login($request)
     {
-        $isValid = (new self)->isValid($request['input']['email'],$request['input']['password']);
-        if ($isValid) {
-            $user = User::where('email',$request['input']['email'])->first();
-            $token = $user->createToken('Token Name')->accessToken;
+        $user = User::where('email',$request['input']['email'])->first();
+        $token = $user->createToken('Token Name')->accessToken;
 
-            return [
-                'access_token' => $token,
-                'user' => $user
-            ];
-        }
-    }
-
-    public function isValid($email,$password) 
-    {
-        $checkCredintions = Auth::attempt(['email' => $email,'password' => $password]);
-        return $checkCredintions;
+        return [
+            'access_token' => $token,
+            'user' => $user
+        ];
     }
 
     public function addRole($role_id)
@@ -85,31 +78,33 @@ class User extends Authenticatable
 
     static function upsertInstance($request)
     {
-       
-        if ( $request['input']['id'] ) {
-            $userOld = User::find($request['input']['id']);
-        }
-
-        $user =   User::updateOrCreate(
+        $user = User::updateOrCreate(
                     [
                         'id' => $request['input']['id'] ?? null
                     ],
                     [
                         'name'  => $request['input']['name'],
                         'email' => $request['input']['email'],
-                        'company_id' => Auth::user()->company_id
-                    ]);
+                        'role_id' => $request['input']['role'],
+                        'company_id' => Auth::user()->company_id ?? 1
+                    ]
+                );
+        if ( isset($request['input']['id']) ) {
+            $userOld = User::find($request['input']['id']);
 
-        if ($userOld->email != $user->email) {
-            DB::table('password_resets')->where('email',$userOld->email)->delete();
-            $user->sendForgetEmail();
-        }
+            if ($userOld->email != $user->email) {
+                DB::table('password_resets')->where('email',$userOld->email)->delete();
+                $user->sendForgetEmail();
+            }
+        } 
         
-        if( ! $request['input']['id'] ) {
+        if( ! isset($request['input']['id']) ) {
             $user->sendForgetEmail();
         }
 
-        return $user;
+        return [
+            'status' => 'Success'
+        ];
     }
 
     public function sendForgetEmail($verify = false)
@@ -190,7 +185,9 @@ class User extends Authenticatable
     public function deleteInstance()
     {
         $this->delete();
-        return $this;
+        return [
+            'status' => 'Success'
+        ];
     }
 
     public function toggleUserActivateInstance()
@@ -198,27 +195,45 @@ class User extends Authenticatable
         $this->active = !$this->active;
         $this->save();
 
-        return $this;
+        return [
+            'status' => 'Success'
+        ];
     }
 
-    static function exportUserExcel($extention)
+    static function exportUserFiles($args)
     {
+        $extention = $args['type'];
+
         abort_if(!in_array($extention,['xlsx','pdf','csv']),504,"unsupported formate");
 
         $name = md5(rand(10000000000,99999999999)).".$extention";
 
         if ( $extention == 'pdf' ) {
-                Excel::store(new UsersExport,"files/$name",'local' ,\Maatwebsite\Excel\Excel::DOMPDF);
+                Excel::store(new UsersExport($args),"files/$name",'local' ,\Maatwebsite\Excel\Excel::DOMPDF);
         } else {
-                Excel::store(new UsersExport,"files/$name");
+                Excel::store(new UsersExport($args),"files/$name");
         }
 
         return $name;
     }
 
-    static function hasPriviledge()
+    public function isPartner()
     {
-        
+        return ($this->role_id == PARTNER) ? true : false;
+    }
+
+    public function isSuperAdmin()
+    {
+        return ($this->role_id == SUPER_ADMIN) ? true : false;
+    }
+
+    public function hasPriviledge($priviledge)
+    {
+        $hasPriviledges = $this->role->priviledges->where('id',$priviledge)->count();
+
+        $authorized = ( $hasPriviledges || Auth::user()->isPartner() || Auth::user()->isSuperAdmin() ) ? true : false;
+
+        return $authorized;
     }
 
     //Accessors
@@ -232,9 +247,15 @@ class User extends Authenticatable
 
     public function scopeFilter($query,$search_array) 
     {
-        if ( ! empty($search_array['input']['name']) ) {
-            $query->where('name', 'LIKE', '%'. $search_array['input']['name'] .'%');
+        if ( ! empty($search_array['name']) ) {
+            $query->where('name', 'LIKE', '%'. $search_array['name'] .'%');
         }
+
+        if ( ! empty($search_array['role']) && isset($search_array['role']) ) {
+            $query->where('role_id',$search_array['role']);
+        }
+
+        $query->where('id','!=',Auth::user()->id);
 
         return $query;
     }
@@ -244,6 +265,11 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function testMail()
+    {
+        self::testMail();
     }
 
 }

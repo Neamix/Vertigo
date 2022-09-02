@@ -30,6 +30,6 @@ final class UserMutation
 
     public function addRoleToUser($_,array $args)
     {
-        return Auth::user()->addRole($args['role_id']);
+        return User::find($args['user_id'])->addRole($args['role_id']);
     }
 }

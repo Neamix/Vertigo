@@ -19,11 +19,17 @@ final class UserQuery
 
     public function userList($_, array $args)
     {
-        return User::filter($args);
+        $filter = $args['input'] ?? $args;
+        return User::filter($filter);
+    }
+
+    public function roleList()
+    {
+        return [];
     }
 
     public function userExport($_, array $args)
     {
-        return User::exportUserExcel($args['type']);
+        return User::exportUserFiles($args);
     }
 }

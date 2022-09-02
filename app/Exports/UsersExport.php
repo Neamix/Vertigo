@@ -6,23 +6,23 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
 
-class UsersExport implements FromCollection,WithHeadings
+class UsersExport implements FromView
 {
+    protected $search;
+    public function __construct($filter)
+    {
+        $this->search = $filter['search'];
+    }
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function collection()
-    {
-        return DB::table('users')->select(DB::raw("name, email, CASE WHEN active= 1 THEN 'Yes' ELSE 'No' END AS Male"))->get();
-    }
 
-    public function headings(): array
-    {
-        return [
-            'Name',
-            'Email',
-            'Active'
-        ];
+    public function view(): View {
+        return view('export.users', [
+            'users' => User::filter($this->search)->get()
+        ]);
     }
 }
