@@ -5,7 +5,7 @@ extend type Mutation {
 
     upsert(
         input: UserCreateInput
-    ): User  @field(resolver: "UserAuthMutation@upsert")
+    ): UserStatus  @field(resolver: "UserAuthMutation@upsert")
 
     forgetPassword(
         input: UserForgetInput
@@ -33,7 +33,7 @@ type ForgetPassword {
 
 input UserInput @validator  {
     email: String,
-    password: String,
+    password: String !,
 }
 
 input UserForgetInput @validator {
@@ -43,7 +43,9 @@ input UserForgetInput @validator {
 input UserCreateInput @validator {
     email: String,
     name: String,
-    id: ID
+    role: ID,
+    id: ID,
+    search: [String]
 }
 
 input UserResetPassword @validator {

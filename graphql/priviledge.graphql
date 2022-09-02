@@ -1,5 +1,5 @@
 extend type Query {
-    priviledges: [Priviledge!]! @paginate @guard
+    priviledges: [Priviledge!]! @field(resolver:"PriviledgeQuery@getPriviledges") @guard
     priviledge(id: ID @eq): Priviledge @find @guard
 }
 
@@ -7,5 +7,7 @@ extend type Query {
 type Priviledge {
     parent: String,
     name: String,
-    id: ID
+    id: ID,
+    parent_id: ID,
+    children: [Priviledge!]! @hasMany(relation:"children")
 }

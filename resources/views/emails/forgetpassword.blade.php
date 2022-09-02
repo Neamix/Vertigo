@@ -20,7 +20,7 @@
             }
 
             .title {
-                font-size: 24px;
+                font-size: 17px;
             }
 
             .bold {
@@ -54,12 +54,11 @@
         </style>
     </head>
     <body>
-        <img src="https://emilus.themenate.net/img/logo.png" class="mt-2">
-        <p class="title">Password {{$data['type']}} Instructions</p>
+        <img src="https://drive.google.com/uc?id=17F6Qtca-NWWLC1RQRN3Hk-igyOTZsGk3" class="mt-2" style="width: 221px; margin: 15px 0;">
         <div class="container">
             <span class="bold">Hello {{$data['name']}},</span>
             <br>
-            <p class="pt-2"> Click the button to {{$data['type']}} your password for your Emilus account.</p>
+            <p class="pt-2"> Click the button to {{$data['type']}} your password for your {{ env('APP_NAME') }} account.</p>
             <button class="btn ">
             <a href="{{ url($data['url']) }}" class="cover_link">
             </a>
@@ -73,7 +72,7 @@
             </a>
             <p>
             Thank you,<br>
-            The Emilus Team
+            The {{ env('APP_NAME') }} Team
             </p>
         </div>
     </body>

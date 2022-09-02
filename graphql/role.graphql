@@ -1,10 +1,14 @@
 extend type Query {
     role(id: ID @eq): Role @find @guard
+    roles(input: RoleSearchInput): Role 
+    @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RoleQuery@roleList")
+    @can(ability: "view", resolved: true) 
+    @guard 
 }
 
 extend type Mutation {
-    roleupsert(input: RoleInput): Role @field(resolver:"RoleMutation@upsert") @guard
-    roledelete(id: ID @rules(apply: ["exists:roles,id"]) @eq): Role @field(resolver:"RoleMutation@delete")  @guard
+    roleupsert(input: RoleInput): RoleStatus @field(resolver:"RoleMutation@upsert") @guard @can(ability: "upsert")
+    roledelete(id: ID @rules(apply: ["exists:roles,id"]) @eq,password: String): RoleStatus @field(resolver:"RoleMutation@delete")  @guard @validator
 }
 
 # Inputs
@@ -12,6 +16,11 @@ extend type Mutation {
 input RoleInput @validator {
     name: String,
     priviledges: [ID],
+    id: ID
+}
+
+input RoleSearchInput {
+    name: String
 }
 
 # Types
@@ -21,4 +30,9 @@ type Role {
     name: String,
     users: [User!]! @hasMany,
     priviledges: [Priviledge]
+}
+
+type RoleStatus {
+    status: String
+    roles: Role  @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RoleQuery@roleList")
 }
