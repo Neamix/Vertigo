@@ -21,6 +21,7 @@ class RoleSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'partner',
+                'company_id' => null
             ]
         );
         
@@ -31,6 +32,7 @@ class RoleSeeder extends Seeder
             [
                 'id' => 2,
                 'name' => 'super_admin',
+                'company_id' => null
             ]
         );
     }

@@ -4,15 +4,27 @@ namespace App\Models;
 
 use App\Http\Helpers\DeleteActions;
 use App\Http\Helpers\Tenent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Role extends Model
 {
-    use HasFactory,DeleteActions,Tenent;
+    use HasFactory,DeleteActions;
 
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(function(Builder $builder){
+            if ( Auth::guard('api')->check() ) {
+                if( ! Auth::user()->isPartner() ) {
+                    $builder->where('company_id',Auth::user()->id);
+                }
+            }
+        });
+    }
 
     static function upsertInstance($request)
     {
@@ -37,6 +49,24 @@ class Role extends Model
         return $this;
     }
 
+    static function getRoleList()
+    {
+        return Role::all();
+    }
+
+    //scope
+
+    public function scopeFilter($query,$search_array) 
+    {
+        $query->where('company_id',Auth::user()->company_id);
+
+        if ( ! empty($search_array['input']['name']) ) {
+            $query->where('name', 'LIKE', '%'. $search_array['input']['name'] .'%');
+        }
+
+        return $query;
+    }
+
     //Relations
     public function priviledges()
     {
@@ -45,6 +75,6 @@ class Role extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(User::class);
     }
 }

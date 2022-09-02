@@ -17,6 +17,7 @@ class CreatePriviledgesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('parent');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
         });
     }
