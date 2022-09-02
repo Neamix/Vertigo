@@ -3,6 +3,8 @@
 use App\Mail\DefaultEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Models\File;
+use App\Models\Priviledge;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,23 +16,25 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-use App\Exports\UsersExport;
-use App\Models\File;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
-Route::get('/', function () {
-    $user = User::find(22);
-    dd($user);
-    // // Creating a token without scopes...
-    // $token = $user->createToken('Token Name')->accessToken;
 
-    // return $token;
+
+Route::get('/', function () {
+    $data['name'] = 'abdalrhman';
+    $data['token'] = 'toekn';
+    $data['email'] = 'abdalrhmanhussin@gmail.com';
+    $data['type'] = 'Verify';
+    $data['url']   = "reset?email=email&token=token&type=".$data['type'];
+    $data['view'] = 'emails.forgetpassword';
+
+    return new DefaultEmail($data);
 });
 
 Route::get('/demo', function () {
-    return Excel::download(new UsersExport, 'users.xlsx');
+    $users = User::all();
+
+    return view('export.users',[
+        'users' => $users
+    ]);
 });
 
 Route::get('/download/{file}',function($file){

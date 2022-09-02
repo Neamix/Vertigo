@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Storage;
 
 Route::group(['middleware' => 'auth:api'],function(){
     Route::get('/download/{file}',function($file){
-        dd('here');
         File::create([
             'file' => $file
         ]);

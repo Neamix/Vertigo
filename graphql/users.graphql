@@ -4,9 +4,9 @@ extend type Mutation {
     uploadCover (file: Upload!): User @guard
     deleteUser(
         input: UserDeleteSuspend
-    ): User! @field(resolver:"UserMutation@delete")  @validator @guard
-    toggleUserActivate(id: ID!): User @field(resolver: "UserMutation@toggleUserActivate") @guard
-    addRole(role_id: ID @rules(apply: ["exists:roles,id"])): User @field(resolver: "UserMutation@addRoleToUser") @guard
+    ): UserStatus! @field(resolver:"UserMutation@delete")  @validator  @guard
+    toggleUserActivate(id: ID!): UserStatus @field(resolver: "UserMutation@toggleUserActivate") @guard
+    addRole(role_id: ID! @rules(apply: ["exists:roles,id"]),user_id: ID! @rules(apply: ["exists:users,id"])): User @field(resolver: "UserMutation@addRoleToUser") @guard
 }
 
 extend type Query {
@@ -14,12 +14,14 @@ extend type Query {
       id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
       email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
     ): User @find @guard
+    
+    me: User @auth
 
     users(
        input: UserSearchInput 
     ): User  @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\UserQuery@userList") @guard
 
-    userExport(type: String!): String @field(resolver: "UserQuery@userExport") @guard
+    userExport(type: String!,search: UserSearchInput): String @field(resolver: "UserQuery@userExport") @guard
 }
 
 type User {
@@ -30,8 +32,15 @@ type User {
     avatar: String,
     cover: String,
     active: Int,
+    role: Role @belongsTo,
     created_at: DateTime!
     updated_at: DateTime!
+    users(input:UserSearchInput): User @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\UserQuery@userList")
+}
+
+type UserStatus {
+    status: String,
+    users(input:UserSearchInput): User @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\UserQuery@userList")
 }
 
 input UserDeleteSuspend {
@@ -41,5 +50,6 @@ input UserDeleteSuspend {
 
 input UserSearchInput {
     name: String
-    role: String
+    role: ID,
+    page: Int
 }
