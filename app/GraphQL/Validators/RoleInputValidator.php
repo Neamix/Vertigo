@@ -18,11 +18,15 @@ final class RoleInputValidator extends Validator
     {
         return [
             'id' => [function($attribute,$value,$fail){
-                $role = Role::find('id');
+               
+                if ( $value ) {
+                    $role = Role::find($value);
                 
-                if ( ! $role ) {
-                    return $fail("This role doesn't exist");
+                    if ( ! $role ) {
+                        return $fail("This role doesn't exist");
+                    }
                 }
+
             }],
             'priviledges' => [function($attribute,$value,$fail){
 
@@ -34,17 +38,26 @@ final class RoleInputValidator extends Validator
 
             }],
 
-            'name' => [function($attribute,$value,$fail){
-
-                $countName = Role::where([
-                    'name' => $value,
-                    'company_id' => Auth::user()->company_id
-                ])->count();
-                
-                if ( $countName ) {
-                    return $fail("This role name already in use");
+            'name' => ['required_without:id',function($attribute,$value,$fail){
+                if ( ! $this->arg('id') ) {
+                    $countName = Role::where([
+                        'name' => $value,
+                        'company_id' => Auth::user()->company_id
+                    ])->count();
+                    
+                    if ( $countName ) {
+                        return $fail("This role name already in use");
+                    }
                 }
             }]
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required_without' => "Please enter role name",
+            'priviledges.required_without' => "Please enter at least one priviledge"
         ];
     }
 }
