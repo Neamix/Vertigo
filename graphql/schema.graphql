@@ -6,3 +6,5 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 
 #import priviledge.graphql
 #import role.graphql
+
+#import request.graphql

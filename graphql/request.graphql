@@ -1,0 +1,36 @@
+extend type Query {
+    request(id: ID @eq): Request @find @guard
+    requests(input: RequestSearchInput): Request 
+    @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RequestQuery@requestList")
+    @can(ability: "view", resolved: true) 
+    @guard 
+}
+
+extend type Mutation {
+    requestupsert(input: RequestInput): RequestStatus @field(resolver:"RequestMutation@upsert") @guard  @can(ability: "upsert",model: "App\\Models\\Request")
+    requestdelete(id: ID @rules(apply: ["exists:requests,id"]) @eq,password: String): RequestStatus @field(resolver:"RequestMutation@delete")  @guard @validator
+}
+
+# Inputs
+
+input RequestInput @validator {
+    name: String,
+    type: ID,
+    id: ID
+}
+
+input RequestSearchInput {
+    name: String
+}
+
+# Types
+
+type Request {
+    id: ID,
+    name: String,
+}
+
+type RequestStatus {
+    status: String
+    requests: Request  @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RequestQuery@requestList")
+}
