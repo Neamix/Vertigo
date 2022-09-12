@@ -20,7 +20,7 @@ class Request extends Model
             ['id' => $request['input']['id'] ?? null],
             [
                 'name' => $request['input']['name'],
-                'type_id' => $request['input']['type'],
+                'request_type_id' => $request['input']['type'],
                 'company_id' => Auth::user()->company_id
             ]
         );
@@ -61,5 +61,10 @@ class Request extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function requestType()
+    {
+        return $this->belongsTo(RequestType::class);
     }
 }
