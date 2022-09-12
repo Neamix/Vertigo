@@ -1,0 +1,38 @@
+extend type Query {
+    status(id: ID @eq): Status @find @guard
+    statuses(input: StatusSearchInput): Status 
+    @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\StatusQuery@statusList")
+    @can(ability: "view", resolved: true) 
+    @guard 
+}
+
+extend type Mutation {
+    statusupsert(input: StatusInput): StatusStatus @field(resolver:"StatusMutation@upsert") @guard  @can(ability: "upsert",model: "App\\Models\\Status")
+    statusdelete(id: ID @rules(apply: ["exists:statuses,id"]) @eq,password: String): StatusStatus @field(resolver:"StatusMutation@delete")  @guard @validator
+}
+
+# Inputs
+
+input StatusInput @validator {
+    name: String,
+    color: String,
+    id: ID
+}
+
+input StatusSearchInput {
+    name: String
+}
+
+# Types
+
+type Status {
+    id: ID,
+    name: String,
+    color: String
+}
+
+
+type StatusStatus {
+    status: String
+    statuses(input: StatusSearchInput): Status @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\StatusQuery@statusList")
+}
