@@ -5,7 +5,7 @@ extend type Mutation {
 
     upsert(
         input: UserCreateInput
-    ): UserStatus  @field(resolver: "UserAuthMutation@upsert")
+    ): UserStatus  @field(resolver: "UserAuthMutation@upsert") @can(ability: "upsert",model:"App\\Models\\User")
 
     forgetPassword(
         input: UserForgetInput
