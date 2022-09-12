@@ -38,13 +38,14 @@ class Role extends Model
         
         $role->priviledges()->sync($request['input']['priviledges']);
 
-        return $role;
+        return [
+            'status' => 'Success'
+        ];
     }
 
 
     public function deleteInstance()
     {
-        $this->users()->update(['users.role_id' => 0]);
         $this->deleteWithDeattach(['priviledges']);
         return $this;
     }

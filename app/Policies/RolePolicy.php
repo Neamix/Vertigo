@@ -31,10 +31,6 @@ class RolePolicy
 
     public function upsert()
     {
-        if ( Auth::user()->hasPriviledge(UPSERT_ROLE) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 }
