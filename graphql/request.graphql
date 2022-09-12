@@ -28,9 +28,15 @@ input RequestSearchInput {
 type Request {
     id: ID,
     name: String,
+    requestType: RequestType @belongsTo
+}
+
+type RequestType {
+    type: String,
+    id: ID
 }
 
 type RequestStatus {
     status: String
-    requests: Request  @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RequestQuery@requestList")
+    requests(input: RequestSearchInput): Request @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RequestQuery@requestList")
 }

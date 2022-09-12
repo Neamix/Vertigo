@@ -26,7 +26,12 @@ final class RequestInputValidator extends Validator
             }],
 
             'name' => ['required','min:3',function($attribute,$value,$fail){
-                $is_name_used = Request::where('name',$value)->where('company_id',Auth::user()->company_id)->count();
+
+                if ( $this->arg('id') ) {
+                    $is_name_used = Request::where('name',$value)->where('company_id',Auth::user()->company_id)->where('id','!=',$this->arg('id'))->count();
+                } else {
+                    $is_name_used = Request::where('name',$value)->where('company_id',Auth::user()->company_id)->where('id')->count();
+                }
 
                 if ( $is_name_used ) {
                     return $fail("This name is already used before");
