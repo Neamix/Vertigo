@@ -22,12 +22,23 @@ class Attending extends Model
                 'company_id' => Auth::user()->company_id
             ]
         );
-        
-        $attending->requests()->sync($request->requestArray);
-        $attending->statuses()->sync($request->statusArray);
+
+        $attending->requests()->sync($request['input']['request']);
+        $attending->statuses()->sync($request['input']['status']);
 
         return [
             'status' => 'Success'
+        ];
+    }
+
+    public function deleteInstance()
+    {
+        $this->requests()->detach();
+        $this->statuses()->detach();
+        $this->delete();
+
+        return [
+            'status' => 'Succes'
         ];
     }
 
@@ -48,12 +59,14 @@ class Attending extends Model
 
     public function requests()
     {
-        $this->belongsToMany(Request::class);
+        return $this->belongsToMany(Request::class);
     }
     
     public function statuses()
     {
-        $this->belongsToMany(Status::class);
+        return $this->belongsToMany(Status::class);
     }
+
+
     
 }

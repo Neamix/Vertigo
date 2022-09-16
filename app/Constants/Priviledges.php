@@ -19,3 +19,9 @@ define("DELETE_REQUEST",9);
 define('VIEW_ROLE',10);
 define("UPSERT_ROLE",11);
 define("DELETE_ROLE",12);
+
+// Attending Priviledges
+define('VIEW_ATTENDING',13);
+define("UPSERT_ATTENDING",14);
+define("DELETE_ATTENDING",15);
+
