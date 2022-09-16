@@ -1,0 +1,39 @@
+extend type Query {
+    attending(id: ID @eq): Attending @find @guard
+    attendings(input: AttendingInput): Attending 
+    @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\AttendingQuery@AttendingList")
+    @can(ability: "view", resolved: true) 
+    @guard 
+}
+
+extend type Mutation {
+    attendingupsert(input: AttendingInput): AttendingStatus @field(resolver:"AttendingMutation@upsert") @guard
+    attendingdelete(id: ID @rules(apply: ["exists:attendings,id"]) @eq,password: String): AttendingStatus @field(resolver:"AttendingMutation@delete")  @guard @validator
+}
+
+# Inputs
+
+input AttendingInput @validator {
+    name: String,
+    request: [ID],
+    status: [ID]
+    id: ID
+}
+
+input AttendingSearchInput {
+    name: String
+}
+
+# Types
+
+type Attending {
+    id: ID,
+    name: String,
+    color: String
+}
+
+
+type AttendingStatus {
+    status: String
+    attendinges(input: AttendingSearchInput): Attending @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\AttendingQuery@attendingList")
+}
