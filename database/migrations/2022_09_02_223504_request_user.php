@@ -28,8 +28,6 @@ class RequestUser extends Migration
      */
     public function down()
     {
-        Schema::table('request_user', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('request_user');
     }
 }
