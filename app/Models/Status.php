@@ -36,7 +36,9 @@ class Status extends Model
     public function deleteInstance()
     {
         $this->delete();
-        return $this;
+        return [
+            'status' => 'Success'
+        ];
     }
 
     static function getStatusList()
