@@ -147,5 +147,37 @@ class PriviledgeSeeder extends Seeder
             ]
         );
 
+        Priviledge::updateOrCreate(
+            [
+                'id' => 13
+            ],
+            [
+                'name' => 'View Attending',
+                'parent' => 'Attending Priviledges',
+            ]
+        );
+
+        Priviledge::updateOrCreate(
+            [
+                'id' => 14
+            ],
+            [
+                'name' => 'Update/Create Attending',
+                'parent' => 'Attending Priviledges',
+                'parent_id' => 13
+            ]
+        );
+        
+        Priviledge::updateOrCreate(
+            [
+                'id' => 15
+            ],
+            [
+                'name' => 'Delete Attending',
+                'parent' => 'Attending Priviledges',
+                'parent_id' => 13
+            ]
+        );
+
     }
 }
