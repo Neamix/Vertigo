@@ -27,4 +27,11 @@ final class AttendingInputValidator extends Validator
             }],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => "You must enter name for this profile"
+        ];
+    }
 }

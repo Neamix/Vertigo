@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Models\File;
 use App\Models\Priviledge;
+use App\Models\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,11 +31,13 @@ Route::get('/', function () {
 });
 
 Route::get('/demo', function () {
-    $users = User::all();
+    // $users = User::all();
 
-    return view('export.users',[
-        'users' => $users
-    ]);
+    // return view('export.users',[
+    //     'users' => $users
+    // ]);
+
+    dd(User::find(2)->role);
 });
 
 Route::get('/download/{file}',function($file){

@@ -1,5 +1,6 @@
 extend type Query {
     status(id: ID @eq): Status @find @guard
+    statusesall: [Status] @all @guard
     statuses(input: StatusSearchInput): Status 
     @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\StatusQuery@statusList")
     @can(ability: "view", resolved: true) 

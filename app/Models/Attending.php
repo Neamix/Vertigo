@@ -22,7 +22,6 @@ class Attending extends Model
                 'company_id' => Auth::user()->company_id
             ]
         );
-
         $attending->requests()->sync($request['input']['request']);
         $attending->statuses()->sync($request['input']['status']);
 

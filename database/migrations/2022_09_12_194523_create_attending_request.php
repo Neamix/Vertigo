@@ -17,6 +17,7 @@ class CreateAttendingRequest extends Migration
             $table->id();
             $table->foreignId('attending_id');
             $table->foreignId('request_id');
+            $table->unsignedBigInteger("value");
             $table->timestamps();
         });
     }

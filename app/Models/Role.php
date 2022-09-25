@@ -17,13 +17,13 @@ class Role extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope(function(Builder $builder){
-            if ( Auth::guard('api')->check() ) {
-                if( ! Auth::user()->isPartner() ) {
-                    $builder->where('company_id',Auth::user()->id);
-                }
-            }
-        });
+        // static::addGlobalScope(function(Builder $builder){
+        //     if ( Auth::guard('api')->check() ) {
+        //         if( ! Auth::user()->isPartner() ) {
+        //             $builder->where('company_id',Auth::user()->id);
+        //         }
+        //     }
+        // });
     }
 
     static function upsertInstance($request)

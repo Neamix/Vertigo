@@ -1,5 +1,6 @@
 extend type Query {
     request(id: ID @eq): Request @find @guard
+    requestall: [Request] @all
     requests(input: RequestSearchInput): Request 
     @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\RequestQuery@requestList")
     @can(ability: "view", resolved: true) 
@@ -28,7 +29,7 @@ input RequestSearchInput {
 type Request {
     id: ID,
     name: String,
-    requestType: RequestType @belongsTo
+    requestType: RequestType @belongsTo,
 }
 
 type RequestType {

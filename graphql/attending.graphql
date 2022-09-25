@@ -1,6 +1,6 @@
 extend type Query {
     attending(id: ID @eq): Attending @find @guard
-    attendings(input: AttendingInput): Attending 
+    attendings(input: AttendingSearchInput): Attending 
     @paginate(type: "paginator" defaultCount: 40 builder: "App\\GraphQL\\Queries\\AttendingQuery@AttendingList")
     @can(ability: "view", resolved: true) 
     @guard 
@@ -15,13 +15,18 @@ extend type Mutation {
 
 input AttendingInput @validator {
     name: String,
-    request: [ID],
+    request: [AttendingRequest],
     status: [ID]
     id: ID
 }
 
 input AttendingSearchInput {
     name: String
+}
+
+input AttendingRequest {
+    request_id: ID,
+    value: Int
 }
 
 # Types
