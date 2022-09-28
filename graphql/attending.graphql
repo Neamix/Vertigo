@@ -13,6 +13,11 @@ extend type Mutation {
 
 # Inputs
 
+input AttendingRequest {
+    request_id: ID,
+    value: Int
+}
+
 input AttendingInput @validator {
     name: String,
     request: [AttendingRequest],
@@ -24,17 +29,13 @@ input AttendingSearchInput {
     name: String
 }
 
-input AttendingRequest {
-    request_id: ID,
-    value: Int
-}
-
 # Types
 
 type Attending {
     id: ID,
     name: String,
-    color: String
+    requests: [Request] @belongsToMany,
+    status: [Status] @belongsToMany
 }
 
 

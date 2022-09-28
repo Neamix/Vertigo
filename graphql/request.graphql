@@ -30,6 +30,11 @@ type Request {
     id: ID,
     name: String,
     requestType: RequestType @belongsTo,
+    pivot: RequestPivot
+}
+
+type RequestPivot {
+    value: Int
 }
 
 type RequestType {

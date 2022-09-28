@@ -18,7 +18,14 @@ final class AttendingInputValidator extends Validator
         return [
             'name' => ['required',function ($attribute,$value,$fail) {
                 if ( Auth::check() ) {
-                    $attendingNameExist=  Attending::where('name',$value)->where('company_id',Auth::user()->id)->count();
+                    if ( $this->arg('id') ) {
+                        $attendingNameExist=  Attending::where('name',$value)
+                                                        ->where('company_id',Auth::user()->company_id)
+                                                        ->where('id','!=',$this->arg('id'))
+                                                        ->count();
+                    } else {
+                        $attendingNameExist=  Attending::where('name',$value)->where('company_id',Auth::user()->id)->count();
+                    }
 
                     if ( $attendingNameExist ) {
                         return $fail("You already have attending profile with same name,please use another name to prevent any conflict");

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPSTORM_META\map;
+
 class Attending extends Model
 {
     use HasFactory,Tenent;
@@ -22,8 +24,15 @@ class Attending extends Model
                 'company_id' => Auth::user()->company_id
             ]
         );
-        $attending->requests()->sync($request['input']['request']);
-        $attending->statuses()->sync($request['input']['status']);
+        
+        $request_array = [];
+
+        foreach( $request['input']['request'] as $request_values ) {
+            $request_array[$request_values['request_id']] = ['value' => $request_values['value']];
+        }
+
+        $attending->requests()->sync($request_array);
+        $attending->status()->sync($request['input']['status']);
 
         return [
             'status' => 'Success'
@@ -33,7 +42,7 @@ class Attending extends Model
     public function deleteInstance()
     {
         $this->requests()->detach();
-        $this->statuses()->detach();
+        $this->status()->detach();
         $this->delete();
 
         return [
@@ -58,10 +67,10 @@ class Attending extends Model
 
     public function requests()
     {
-        return $this->belongsToMany(Request::class);
+        return $this->belongsToMany(Request::class)->withPivot('value');
     }
     
-    public function statuses()
+    public function status()
     {
         return $this->belongsToMany(Status::class);
     }

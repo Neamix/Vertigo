@@ -1,6 +1,7 @@
 <?php
 
 use App\Mail\DefaultEmail;
+use App\Models\Attending;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Models\File;
@@ -37,7 +38,7 @@ Route::get('/demo', function () {
     //     'users' => $users
     // ]);
 
-    dd(User::find(2)->role);
+    dd(Attending::find(1)->requests);
 });
 
 Route::get('/download/{file}',function($file){
